@@ -35,3 +35,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.MuiOutlinedInput-notchedOutline {
+
+  border-color: white !important;
+}
+
+.MuiSvgIcon-root{
+
+  color : white !important;
+}

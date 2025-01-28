@@ -2,6 +2,10 @@
 import Grid from '@mui/material/Grid2';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import Prierre from './Prierre';
 import Fajr from '../assets/Images/fajr.jpg';
 import Duhr from '../assets/Images/Duhr.jpg';
@@ -13,6 +17,11 @@ import Isha from '../assets/Images/Isha.jpg';
 
 
 export default function Prierres() {
+
+  const handleChange = (e) => {
+    console.log(e.target.value);
+
+  };
   return (
     <>
     
@@ -68,6 +77,29 @@ export default function Prierres() {
 
 
     </Stack>
+
+
+   <Stack direction="row" justifyContent={"center"} style={{marginTop:"40px"}}>
+      <FormControl style={{width:"20%"}}>
+            <InputLabel id="demo-simple-select-label">
+            <span style = {{color:"white"}}>
+              Ville
+            </span>
+            </InputLabel>
+            <Select
+                            labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              // value={age}
+              label="Age"
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+        </FormControl>
+    
+    </Stack> 
 
     </>
    
