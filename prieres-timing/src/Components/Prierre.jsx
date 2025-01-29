@@ -11,7 +11,7 @@ export default function Prierre({name,time,image}) {
     
     
     
-        <Card sx={{ maxWidth: 354 }}>
+        <Card sx={{ width: 270 }}>
           <CardMedia
             sx={{ height: 140,width:270 }}
             image={image} 

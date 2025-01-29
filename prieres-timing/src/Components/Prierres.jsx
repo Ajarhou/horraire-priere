@@ -13,13 +13,59 @@ import Asr from '../assets/Images/Asr.jpg';
 import Maghreb from '../assets/Images/Maghreb.jpg';
 import Isha from '../assets/Images/Isha.jpg';
 import axios from 'axios';
+import moment from 'moment';
 import { useState, useEffect  } from 'react';
 
 
 
 
 export default function Prierres() {
+  const cities = [
+  {
+    id : "01",
+    name:'Marseille',
+  },
+  {
+    id : "02",
+    name:'Paris',
+  },
+  {
+    id : "03",
+    name:'Toulouse',
+  },
+  {
+    id : "04",
+    name:'Bordeaux',
+  },
+  {
+    id : "05",
+    name:'Nantes',
+  },
+  {
+    id : "06",
+    name:'Lyon',
+  },
+  {
+    id : "07",
+    name:'Strasbourg',
+  },
+  {
+    id : "08",
+    name:'Annecy',
+  },
+    
+  ];
   const [city,setCity]=useState("Marseille");
+  const [timings,setTimings] = useState({
+    Fajr:"04:20",
+    Dhuhr:"12:20",
+    Asr:"15:20",
+    Sunset:"18:20",
+    Isha:"20:20", 
+  });
+  const [today,setToday]=useState(""); 
+  const [nextPrayer,setNextPrayer]=useState("");
+ 
 
 
   useEffect(()=>{ 
@@ -29,17 +75,63 @@ export default function Prierres() {
     })
 
   },[city])
-  const [timings,setTimings] = useState({
-    Fajr:"04:20",
-    Dhuhr:"12:20",
-    Asr:"15:20",
-    Sunset:"18:20",
-    Isha:"20:20", 
-  });
+  useEffect(()=>{
+    const t = moment();
+    setToday(()=>{
+      return t.format("MM DO YYYY | h:mm")});
+    let interval=setInterval(()=>{
+
+     setUpCountDownTimer();
+      
+      
+
+    },1000)
+    return ()=>{
+      clearInterval(interval);
+      
+
+    }
+
+
+  },[])
+   const setUpCountDownTimer=()=>{
+    const momentNow = moment();
+    let nextPrayer = null;
+
+    if(momentNow.isAfter(moment(timings.Fajr,"hh:mm")) && (momentNow.isBefore(moment(timings.Dhuhr,"hh:mm")))){
+
+      nextPrayer = "Dhuhr";
+      setNextPrayer(nextPrayer);
+    }
+    else if(momentNow.isAfter(moment(timings.Duhr,"hh:mm")) && (momentNow.isBefore(moment(timings.Asr,"hh:mm")))){
+
+      nextPrayer = "Asr";
+      setNextPrayer(nextPrayer);
+
+    }
+    else if(momentNow.isAfter(moment(timings.Asr,"hh:mm")) && (momentNow.isBefore(moment(timings.Sunset,"hh:mm")))){
+
+      nextPrayer = "Maghreb";
+      setNextPrayer(nextPrayer);
+
+    }
+    else if(momentNow.isAfter(moment(timings.Sunset,"hh:mm")) && (momentNow.isBefore(moment(timings.Isha,"hh:mm")))){
+
+      nextPrayer = "Isha";
+      setNextPrayer(nextPrayer);
+
+    }
+    else nextPrayer = "Fajr";
+    setNextPrayer(nextPrayer);
+
+
+   };
+ 
   // https://api.aladhan.com/v1/timingsByCity/29-01-2025?country=FR&city=marseille;
 
   const handleChange = (e) => {
-    setCity(e.target.value);
+    const findCity = cities.find((ville)=>(ville.id === e.target.value));
+    setCity(findCity.name);
 
   };
   return (
@@ -51,12 +143,13 @@ export default function Prierres() {
             <div>
 
             <h2>
-                09 septembre 2023 | 4:30 
+                {today}
             </h2>
 
               <h1>
                {city}
               </h1>
+             
 
             </div>
              
@@ -69,7 +162,7 @@ export default function Prierres() {
             <div>
 
                <h2>
-                  Reste jusqu'au prochaine priere Asr 
+                  Reste jusqu'au prochaine priere  {nextPrayer} 
                 </h2>
 
                 <h1>
@@ -101,7 +194,8 @@ export default function Prierres() {
 
    <Stack direction="row" justifyContent={"center"} style={{marginTop:"40px"}}>
       <FormControl style={{width:"20%"}}>
-            <InputLabel id="demo-simple-select-label">
+              
+            <InputLabel  id="demo-simple-select-label">
             <span style = {{color:"white"}}>
               Ville
             </span>
@@ -110,12 +204,18 @@ export default function Prierres() {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={city}
-              label="Age"
+              label="City"
               onChange={handleChange}
-            >
-              <MenuItem value="Marseille">Marseille</MenuItem>
-              <MenuItem value="Paris">Paris</MenuItem>
-              <MenuItem value="Bordeaux">Bordeaux</MenuItem>
+              style={{color:"white"}}
+             
+
+            >{cities.map((item)=>
+            (
+              <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+            )          
+
+            )}
+              
             </Select>
         </FormControl>
     
