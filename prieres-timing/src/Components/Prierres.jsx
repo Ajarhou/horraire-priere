@@ -65,6 +65,7 @@ export default function Prierres() {
   });
   const [today,setToday]=useState(""); 
   const [nextPrayer,setNextPrayer]=useState("");
+  const [remainning,setRemaianing]=useState("");
  
 
 
@@ -89,40 +90,71 @@ export default function Prierres() {
     return ()=>{
       clearInterval(interval);
       
+      
 
     }
 
 
-  },[])
+  },[timings])
    const setUpCountDownTimer=()=>{
     const momentNow = moment();
     let nextPrayer = null;
 
-    if(momentNow.isAfter(moment(timings.Fajr,"hh:mm")) && (momentNow.isBefore(moment(timings.Dhuhr,"hh:mm")))){
+    if(
+      momentNow.isAfter(moment(timings.Fajr,"hh:mm")) &&
+      momentNow.isBefore(moment(timings.Dhuhr,"hh:mm"))){
 
       nextPrayer = "Dhuhr";
-      setNextPrayer(nextPrayer);
+      
     }
-    else if(momentNow.isAfter(moment(timings.Duhr,"hh:mm")) && (momentNow.isBefore(moment(timings.Asr,"hh:mm")))){
+    else if(
+      momentNow.isAfter(moment(timings.Duhr,"hh:mm")) &&
+      momentNow.isBefore(moment(timings.Asr,"hh:mm"))){
 
       nextPrayer = "Asr";
-      setNextPrayer(nextPrayer);
+      
 
     }
-    else if(momentNow.isAfter(moment(timings.Asr,"hh:mm")) && (momentNow.isBefore(moment(timings.Sunset,"hh:mm")))){
+    else if(
+      momentNow.isAfter(moment(timings.Asr,"hh:mm")) && 
+      momentNow.isBefore(moment(timings.Sunset,"hh:mm"))){
 
       nextPrayer = "Maghreb";
-      setNextPrayer(nextPrayer);
+      
 
     }
-    else if(momentNow.isAfter(moment(timings.Sunset,"hh:mm")) && (momentNow.isBefore(moment(timings.Isha,"hh:mm")))){
+    else if(
+      momentNow.isAfter(moment(timings.Sunset,"hh:mm")) && 
+      momentNow.isBefore(moment(timings.Isha,"hh:mm"))){
 
       nextPrayer = "Isha";
-      setNextPrayer(nextPrayer);
+      
 
     }
     else nextPrayer = "Fajr";
     setNextPrayer(nextPrayer);
+    // apres quand connais la prochaine priere on peut dedeuire le temps qui reste jusqua cette priere 
+    const nextPrayerTimes = timings[nextPrayer];
+    const nextPrayerTimesMoment = moment(nextPrayerTimes,"hh:mm");
+
+    let DifferenceTimes = moment(nextPrayerTimes,"hh:mm").diff(momentNow);
+    console.log(`difference time est ${DifferenceTimes}`);
+    // let remainingTime = (durationTimes.hours() , durationTimes.minutes(), durationTimes.seconds());
+   
+    if (DifferenceTimes < 0){
+      const midnightDiff = moment("23:59:59","hh:mm:ss").diff(momentNow);
+      const fajrTomidNightDiff = nextPrayerTimesMoment.diff(moment("00:00:00","hh:mm:ss"));
+      const totatlDiffTimes = midnightDiff + fajrTomidNightDiff ;
+      DifferenceTimes = totatlDiffTimes;
+
+      
+       
+
+    };
+    const durationTimes = moment.duration(DifferenceTimes);
+    setRemaianing(`${durationTimes.hours()} : ${durationTimes.minutes()} : ${durationTimes.seconds()}`);
+
+    // console.log("reste" ,durationTimes.hours(), durationTimes.minutes(), durationTimes.seconds());
 
 
    };
@@ -166,7 +198,7 @@ export default function Prierres() {
                 </h2>
 
                 <h1>
-                  00:10:30
+                  {remainning}
                 </h1>
 
             </div>
