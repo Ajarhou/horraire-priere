@@ -79,7 +79,7 @@ export default function Prierres() {
   useEffect(()=>{
     const t = moment();
     setToday(()=>{
-      return t.format("MM DO YYYY | h:mm")});
+      return t.format("LLLL")});
     let interval=setInterval(()=>{
 
      setUpCountDownTimer();
@@ -88,19 +88,20 @@ export default function Prierres() {
 
     },1000)
     return ()=>{
-      clearInterval(interval);
+      // return dans le useEffect permé de nettoyer le timer avec la methode clearInterval pendant la mort du composant
+      clearInterval(interval); 
       
-      
-
     }
 
 
-  },[timings])
+  },[timings,remainning])
    const setUpCountDownTimer=()=>{
     const momentNow = moment();
     let nextPrayer = null;
+    // isAfter && isBefore methode qui compare le moment actuel avec un moment donné
 
     if(
+      //moment permet de convertir lheur qui est une chaide de cractere a un object moment
       momentNow.isAfter(moment(timings.Fajr,"hh:mm")) &&
       momentNow.isBefore(moment(timings.Dhuhr,"hh:mm"))){
 
@@ -135,10 +136,11 @@ export default function Prierres() {
     setNextPrayer(nextPrayer);
     // apres quand connais la prochaine priere on peut dedeuire le temps qui reste jusqua cette priere 
     const nextPrayerTimes = timings[nextPrayer];
+    // convertis lheure de la prochaine priere qui est une chaine de caractere a un object moment pour benificier des methodes moment
     const nextPrayerTimesMoment = moment(nextPrayerTimes,"hh:mm");
 
-    let DifferenceTimes = moment(nextPrayerTimes,"hh:mm").diff(momentNow);
-    console.log(`difference time est ${DifferenceTimes}`);
+    let DifferenceTimes = nextPrayerTimesMoment.diff(momentNow);
+    // console.log(`difference time est ${DifferenceTimes}`);
     // let remainingTime = (durationTimes.hours() , durationTimes.minutes(), durationTimes.seconds());
    
     if (DifferenceTimes < 0){
@@ -151,6 +153,7 @@ export default function Prierres() {
        
 
     };
+    // convertie le nombre trouvé a une format dheure minute et seconds
     const durationTimes = moment.duration(DifferenceTimes);
     setRemaianing(`${durationTimes.hours()} : ${durationTimes.minutes()} : ${durationTimes.seconds()}`);
 
@@ -233,14 +236,12 @@ export default function Prierres() {
             </span>
             </InputLabel>
             <Select
+              style={{color:"white"}}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={city}
               label="City"
-              onChange={handleChange}
-              style={{color:"white"}}
-             
-
+              onChange={handleChange}                        
             >{cities.map((item)=>
             (
               <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
