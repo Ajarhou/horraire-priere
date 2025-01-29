@@ -12,14 +12,34 @@ import Duhr from '../assets/Images/Duhr.jpg';
 import Asr from '../assets/Images/Asr.jpg';
 import Maghreb from '../assets/Images/Maghreb.jpg';
 import Isha from '../assets/Images/Isha.jpg';
+import axios from 'axios';
+import { useState, useEffect  } from 'react';
 
 
 
 
 export default function Prierres() {
+  const [city,setCity]=useState("Marseille");
+
+
+  useEffect(()=>{ 
+    axios.get(`https://api.aladhan.com/v1/timingsByCity/29-01-2025?country=FR&city=${city}`)
+    .then((response)=>{
+      setTimings(response.data.data.timings);
+    })
+
+  },[city])
+  const [timings,setTimings] = useState({
+    Fajr:"04:20",
+    Dhuhr:"12:20",
+    Asr:"15:20",
+    Sunset:"18:20",
+    Isha:"20:20", 
+  });
+  // https://api.aladhan.com/v1/timingsByCity/29-01-2025?country=FR&city=marseille;
 
   const handleChange = (e) => {
-    console.log(e.target.value);
+    setCity(e.target.value);
 
   };
   return (
@@ -35,7 +55,7 @@ export default function Prierres() {
             </h2>
 
               <h1>
-                Marseille
+               {city}
               </h1>
 
             </div>
@@ -69,11 +89,11 @@ export default function Prierres() {
 
     <Stack direction="row" justifyContent={"space-around "} style={{marginTop:"50px"}}> 
 
-    <Prierre name="Fajr" time="04:10" image={Fajr}/>  
-    <Prierre name="Duhr" time="12:25"image={Duhr}/>  
-    <Prierre name="Asr" time="15:35"image={Asr}/>  
-    <Prierre name="Maghreb" time="18:25"image={Maghreb}/>  
-    <Prierre name="Isha" time="20:42"image={Isha}/>  
+    <Prierre name="Fajr" time={timings.Fajr} image={Fajr}/>  
+    <Prierre name="Dhuhr" time={timings.Dhuhr}image={Duhr}/>  
+    <Prierre name="Asr" time={timings.Asr}image={Asr}/>  
+    <Prierre name="Maghreb" time={timings.Sunset}image={Maghreb}/>  
+    <Prierre name="Isha" time={timings.Isha}image={Isha}/>  
 
 
     </Stack>
@@ -87,15 +107,15 @@ export default function Prierres() {
             </span>
             </InputLabel>
             <Select
-                            labelId="demo-simple-select-label"
+              labelId="demo-simple-select-label"
               id="demo-simple-select"
-              // value={age}
+              value={city}
               label="Age"
               onChange={handleChange}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value="Marseille">Marseille</MenuItem>
+              <MenuItem value="Paris">Paris</MenuItem>
+              <MenuItem value="Bordeaux">Bordeaux</MenuItem>
             </Select>
         </FormControl>
     
